@@ -56,6 +56,7 @@ def fizz_buzz(arr: StaticArray) -> StaticArray:
 
     return new_array
 
+
 # ------------------- PROBLEM 3 - REVERSE -----------------------------------
 
 def reverse(arr: StaticArray) -> None:
@@ -66,13 +67,13 @@ def reverse(arr: StaticArray) -> None:
 
     i = 0
     mid = size // 2
-    while i < mid:
+    while i <= mid:
         temp = arr[i]
         arr[i] = arr[size - i]
         arr[size - i] = temp
         i += 1
 
-    return arr
+    return
 
 
 # ------------------- PROBLEM 4 - ROTATE ------------------------------------
@@ -80,31 +81,29 @@ def reverse(arr: StaticArray) -> None:
 def rotate(arr: StaticArray, steps: int) -> StaticArray:
     """
     Returns a new Static Array in which the positions of the elements in the original array
-    has shifted either right or left steps
-
-    If steps is a positive integer, then the elements will be rotated to the right;
-    otherwise, to the left
+    has shifted
     """
     size = arr.length()
     new_array = StaticArray(size)
 
-    if size > steps >= 0:
-        valid_steps = steps
-
+    # if steps are larger than the range of size, then find the valid steps through calculation
     if steps > size:
-        valid_steps = steps - size * (steps // size)
+        steps = steps - size * (steps // size)
 
+    # if steps are negative integers, then the valid steps equal to the size - abs(steps)
     if -size <= steps < 0:
-        valid_steps = size - abs(steps)
+        steps = size - abs(steps)
 
+    # if steps are negative integers and are larger than the size range,
+    # then find the valid steps through calculation
     if steps <= -size:
-        valid_steps = size - (abs(steps) - size * (abs(steps) // size))
+        steps = size - (abs(steps) - size * (abs(steps) // size))
 
     for i in range(size):
-        if i < valid_steps:
-            new_array.set(i, arr[size - valid_steps + i])
+        if i < steps:
+            new_array.set(i, arr[size - steps + i])
         else:
-            new_array.set(i, arr[i - valid_steps])
+            new_array.set(i, arr[i - steps])
 
     return new_array
 
@@ -177,18 +176,18 @@ def find_mode(arr: StaticArray) -> (int, int):
     """
     size = arr.length()
     final_frequency = init_frequency = 1
-    final_mode = init_mode = arr[0]
+    final_mode = arr[0]
 
     for i in range(size - 1):
-        if arr[i] == arr[i + 1] and i + 1 != size - 1:
+        if arr[i] == arr[i + 1] and i + 1 != size - 1:  # the original array has not been looped through yet
             init_frequency += 1
             continue
 
-        if arr[i] == arr[i + 1] and i + 1 == size - 1:
-            if init_frequency <= final_frequency:
+        if arr[i] == arr[i + 1] and i + 1 == size - 1:  # looped through the original array
+            if init_frequency < final_frequency:
                 init_frequency += 1
 
-            else:
+            else:                                       # found a new element with higher frequency
                 init_frequency += 1
                 final_frequency = init_frequency
                 final_mode = arr[i]
@@ -198,12 +197,13 @@ def find_mode(arr: StaticArray) -> (int, int):
             init_frequency = 1
             continue
 
-        if arr[i] != arr[i + 1] and init_frequency > final_frequency:
+        if arr[i] != arr[i + 1] and init_frequency > final_frequency:  # found a new element with higher frequency
             final_frequency = init_frequency
             final_mode = arr[i]
             init_frequency = 1
 
     return final_mode, final_frequency
+
 
 # ------------------- PROBLEM 8 - REMOVE_DUPLICATES -------------------------
 
@@ -218,7 +218,7 @@ def remove_duplicates(arr: StaticArray) -> StaticArray:
         if arr[i - 1] == arr[i]:
             continue
 
-        else:
+        else:                       # found a different element, new array's size + 1
             new_size += 1
 
     new_array = StaticArray(new_size)
@@ -286,7 +286,7 @@ def transform_string(source: str, s1: str, s2: str) -> str:
     Returns a modified string that is the same length as the source string;
     The output string will be constructed according to the following rules:
         1. If the character from source string is present in s1, it should be replaced by the character
-            at the sanem index in s2;
+            at the same index in s2;
         2. If the character is:
             a. An uppercase letter, replace it with " ", a space
             b. A lowercase letter, replace it with "#"
